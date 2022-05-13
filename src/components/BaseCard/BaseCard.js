@@ -2,14 +2,16 @@ import React from 'react';
 import Style from "./BaseCard.module.scss";
 import {Button} from "@pancakeswap/uikit";
 
-const BaseCard = ({image, name, type, description, date, ...props}) => {
+const BaseCard = ({image, name, type, description, date, price, ...props}) => {
     return (
         <div className={Style.item}>
             <div className={Style.about_block}>
                 <img src={image} width="60" height="60"/>
                 <div className={Style.text_block}>
+                    <p className={Style.type}>Salary {price}</p>
                     <p className={Style.name}>{name}</p>
                     <p className={Style.type}>{type}, {description}</p>
+
                 </div>
 
             </div>

@@ -1,24 +1,29 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import Style from './Cards.module.scss';
 import {useDispatch, useSelector} from "react-redux";
 import {getCards} from "../../store/actions/cards";
 import BaseCard from "../../components/BaseCard";
-import {Input, SearchIcon, CardsLayout, Toggle, Slider} from "@pancakeswap/uikit";
+import {Input, SearchIcon, CardsLayout, Toggle} from "@pancakeswap/uikit";
 import Select from "../../components/Select/Select";
 import {arrType} from "../../constants/filter";
-
+import {withStyles} from "@material-ui/core";
+import Slider from '@material-ui/core/Slider';
+import {PrettoSlider} from "../../components/Slider/Slider";
 
 const Cards = () => {
     const cards = useSelector((state) => state?.rootReducer.cards.records);
     const [cardList, setCardList] = useState(cards);
     const [filterByName, setFilterByName] = useState('');
     const [filterToType, setFilterToType] = useState();
-    const [filterToSalary, setFilterToSalary] = useState(355.000);
     const [isChecked, setIsChecked] = useState(false);
+
+    const [filterToSalary, setFilterToSalary] = useState();
+    const [maxSalary, setMaxSalary] = useState('');
 
 
     const dispatch = useDispatch();
     const isCardList = !!cardList?.length;
+
 
     useEffect(() => {
         dispatch(getCards());
@@ -44,16 +49,10 @@ const Cards = () => {
             isType = true;
         }
 
-        if (filterToSalary?.length) {
-            isSalary = item?.fields?.Salary > parseInt(filterToSalary, 10)
-            console.log(item?.fields?.Salary)
-        } else {
+
+        if (item?.fields?.Salary < filterToSalary) {
             isSalary = true;
         }
-
-        // cards.filter( item => { return item?.fields?.Salary > parseInt(price, 10) }).map( hotel => {
-        //     return <p key={hotel.name}>{ hotel.name } | { hotel.price } &euro; </p>
-        // })
 
         return isName && isType && isSalary;
 
@@ -68,9 +67,20 @@ const Cards = () => {
     }
 
 
-    const handleSortSalary =(e)=>{
-        setFilterToSalary( e.value );
-        console.log(e.value )
+    const maxSliderValue = useMemo(() => {
+        const salaries = cards.map((card) => card?.fields?.Salary || 0)
+
+        if(!salaries.length) return 0
+        return Math.max(...salaries)
+    }, [cards]);
+
+
+    useEffect(() => {
+        setFilterToSalary(maxSliderValue)
+    }, [maxSliderValue])
+
+    const handleSortSalary = (event, value) => {
+        setFilterToSalary(value);
     }
 
     return (
@@ -89,10 +99,15 @@ const Cards = () => {
                     />
                     <div className={`${Style.wrap} `}>
                         $0/yr
-                        <Slider
+                        <PrettoSlider
+                            key={`slider-${maxSliderValue}`}
+                            //valueLabelDisplay="auto" //label on
+                            aria-label="pretto slider"
+                            defaultValue={maxSliderValue}
                             min={0}
-                            max={1000}
-                            onValueChanged={handleSortSalary}
+                            step={10000}
+                            max={maxSliderValue}
+                            onChange={handleSortSalary}
                         />
                         ${filterToSalary}/yr
                     </div>
@@ -103,6 +118,7 @@ const Cards = () => {
                 </CardsLayout>
             </div>
             <div className={Style.wrap_list}>
+
                 {isCardList ? (
                     cardList.map((card) => {
 
@@ -118,6 +134,7 @@ const Cards = () => {
                                 type={card.fields['Job Type']}
                                 description={card.fields['Short Description']}
                                 date={Math.round(days)}
+                                price={card.fields.Salary}
                             />
                         )
                     })
