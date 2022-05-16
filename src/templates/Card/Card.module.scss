@@ -1,0 +1,123 @@
+.wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: space-around;
+
+  .content {
+    flex: 1 1 67%;
+    padding: 50px;
+    background: linear-gradient(155.47deg, #6F47D0 0.38%, #432C79 100%);
+    border: 1px solid #373240;
+    box-shadow: 0 0 5px #372F47;
+    border-radius: 16px;
+
+    h1 {
+      font-weight: 500;
+      font-size: 32px;
+      line-height: 48px;
+      margin-bottom: 10px;
+      color: #F4EEFF;
+    }
+
+    .about {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #D5CAE9;
+
+      p {
+        display: flex;
+        align-items: center;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 36px;
+        color: #F4EEFF;
+        margin-bottom: 20px;
+
+        img {
+          margin-right: 20px;
+        }
+
+        &:not(:first-child) {
+          margin-left: 60px;
+        }
+      }
+    }
+
+    .description {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+      color: #FFFFFF;
+      margin-top: 30px;
+    }
+  }
+
+  .side_bar {
+    flex: 1 1 30%;
+
+    & > div {
+      background: linear-gradient(91.55deg, #09070C 0.44%, #1E1433 99.56%);
+      box-shadow: 0 0 5px rgba(238, 234, 244, 0.25), 0 1px 0 #373240;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 25px;
+
+      & > div {
+        display: flex;
+        flex-direction: column;
+
+        p {
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 24px;
+          margin-bottom: 10px;
+          color: #F4EEFF;
+        }
+
+        a {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 21px;
+          color: #B8ADD2;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+.relatedJobs {
+  margin-top: 100px;
+
+  h2 {
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 48px;
+    color: #F4EEFF;
+    margin-bottom: 30px;
+  }
+
+  .wrap_list {
+    display: flex;
+    flex-direction: column;
+    background: #27262C;
+    border: 1px solid #373240;
+    box-shadow: 0 0 5px #372F47;
+    border-radius: 16px;
+    overflow: hidden;
+
+
+    .loading_text {
+      font-size: 20px;
+      color: #B8ADD2;
+      display: block;
+      margin: 20px auto;
+
+
+    }
+  }
+}
+

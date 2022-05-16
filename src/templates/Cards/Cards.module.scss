@@ -1,6 +1,27 @@
+.head{
+  margin-bottom: 35px;
+  h1{
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 60px;
+    color: #936CF7;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    img{
+      margin-left: 30px;
+    }
+  }
+  p{
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+  }
+}
 .wrap_filter {
   background: linear-gradient(91.55deg, #09070C 0.44%, #1E1433 99.56%);
-  box-shadow: 0px 0px 5px rgba(238, 234, 244, 0.25), 0px 1px 0px #373240;
+  box-shadow: 0 0 5px rgba(238, 234, 244, 0.25), 0 1px 0 #373240;
   border-radius: 10px;
   padding: 25px;
   margin-bottom: 30px;

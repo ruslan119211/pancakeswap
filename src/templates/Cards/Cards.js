@@ -3,23 +3,21 @@ import Style from './Cards.module.scss';
 import {useDispatch, useSelector} from "react-redux";
 import {getCards} from "../../store/actions/cards";
 import BaseCard from "../../components/BaseCard";
-import {Input, SearchIcon, CardsLayout, Toggle} from "@pancakeswap/uikit";
+import {Input, SearchIcon, CardsLayout, Toggle, Button, CloseIcon, useModal} from "@pancakeswap/uikit";
 import Select from "../../components/Select/Select";
 import {arrType} from "../../constants/filter";
 import {withStyles} from "@material-ui/core";
 import Slider from '@material-ui/core/Slider';
 import {PrettoSlider} from "../../components/Slider/Slider";
+import {icons} from "../../constants/icons";
 
 const Cards = () => {
     const cards = useSelector((state) => state?.rootReducer.cards.records);
     const [cardList, setCardList] = useState(cards);
-    const [filterByName, setFilterByName] = useState('');
-    const [filterToType, setFilterToType] = useState();
+    const [filterByName, setFilterByName] = useState("");
+    const [filterToType, setFilterToType] = useState(null);
     const [isChecked, setIsChecked] = useState(false);
-
     const [filterToSalary, setFilterToSalary] = useState();
-    const [maxSalary, setMaxSalary] = useState('');
-
 
     const dispatch = useDispatch();
     const isCardList = !!cardList?.length;
@@ -70,7 +68,7 @@ const Cards = () => {
     const maxSliderValue = useMemo(() => {
         const salaries = cards.map((card) => card?.fields?.Salary || 0)
 
-        if(!salaries.length) return 0
+        if (!salaries.length) return 0
         return Math.max(...salaries)
     }, [cards]);
 
@@ -83,11 +81,25 @@ const Cards = () => {
         setFilterToSalary(value);
     }
 
+    const handleClear = () => {
+        setFilterByName('');
+
+        setFilterToType(null);
+        setFilterToSalary(maxSliderValue);
+
+    }
     return (
         <>
+            <div className={Style.head}>
+                <h1>
+                    Let’s find a PancakeSwap Job for you
+                    <img src={icons.bunnyIcon} alt="ico"/>
+                </h1>
+                <p>Discover 562+ remote PancakeSwap Jobs around the world at companies working on blockchain, smart contract, DeFi, NFT, crypto etc.</p>
+            </div>
             <div className={Style.wrap_filter}>
                 <div className={Style.search_wrap}>
-                    <Input type="text" scale="lg" width="100%" onChange={handleSearch}
+                    <Input type="text" scale="lg" width="100%" value={filterByName} onChange={handleSearch}
                            placeholder="Search for jobs..."/>
                     <SearchIcon/>
                 </div>
@@ -95,14 +107,16 @@ const Cards = () => {
                 <CardsLayout>
                     <Select
                         options={arrType}
+                        placeHolderText="Job type"
+                        defaultOptionIndex={0}
                         onOptionChange={handleSortType}
                     />
                     <div className={`${Style.wrap} `}>
                         $0/yr
                         <PrettoSlider
-                            key={`slider-${maxSliderValue}`}
-                            //valueLabelDisplay="auto" //label on
+                            key={maxSliderValue}
                             aria-label="pretto slider"
+                            value={filterToSalary}
                             defaultValue={maxSliderValue}
                             min={0}
                             step={10000}
@@ -111,36 +125,41 @@ const Cards = () => {
                         />
                         ${filterToSalary}/yr
                     </div>
+                    {/*<div className={`${Style.wrap} `}>*/}
+                    {/*    <Toggle checked={isChecked} onChange={toggle} scale="sm"/>*/}
+                    {/*    <p>Option to pay in crypto</p>*/}
+                    {/*</div>*/}
                     <div className={`${Style.wrap} `}>
-                        <Toggle checked={isChecked} onChange={toggle} scale="sm"/>
-                        <p>Option to pay in crypto</p>
+                        <Button scale="sm" onClick={handleClear} startIcon={<CloseIcon/>}>Clear filter</Button>
                     </div>
                 </CardsLayout>
             </div>
             <div className={Style.wrap_list}>
+                    {isCardList ? (
+                        cardList.map((card) => {
 
-                {isCardList ? (
-                    cardList.map((card) => {
+                            const date = card.createdTime;
+                            let currentDate = Date.parse(new Date());
+                            let days = (currentDate - Date.parse(date)) / 86400000;
 
-                        const date = card.createdTime;
-                        let currentDate = Date.parse(new Date());
-                        let days = (currentDate - Date.parse(date)) / 86400000;
+                            return (
 
-                        return (
-                            <BaseCard
-                                key={card.id}
-                                image={card.fields['Main Image'][0].url}
-                                name={card.fields.Name}
-                                type={card.fields['Job Type']}
-                                description={card.fields['Short Description']}
-                                date={Math.round(days)}
-                                price={card.fields.Salary}
-                            />
-                        )
-                    })
-                ) : (
-                    <p className={Style.loading_text}>No results</p>
-                )}
+                                   <BaseCard
+                                        key={card.id}
+                                        image={card.fields['Main Image'][0].url}
+                                        name={card.fields.Name}
+                                        type={card.fields['Job Type']}
+                                        description={card.fields['Short Description']}
+                                        date={Math.round(days)}
+                                        // price={card.fields.Salary}
+                                        id={card.id}
+                                    />
+
+                            )
+                        })
+                    ) : (
+                        <p className={Style.loading_text}>No results</p>
+                    )}
             </div>
         </>
     );
