@@ -18,7 +18,7 @@ const Cards = () => {
     const [filterToType, setFilterToType] = useState(null);
     const [isChecked, setIsChecked] = useState(false);
     const [filterToSalary, setFilterToSalary] = useState();
-
+    const [isFetching, setIsFetching] = useState(false);
     const dispatch = useDispatch();
     const isCardList = !!cardList?.length;
 
@@ -88,6 +88,19 @@ const Cards = () => {
         setFilterToSalary(maxSliderValue);
 
     }
+
+    function loadMoreCards() {
+        setIsFetching(true);
+
+        //mocking an API call
+        setTimeout(() => {
+            setCardList((prevState) => [
+                ...prevState,
+                ...Array.from(Array(20).keys(), (n) => n + prevState.length + 1),
+            ]);
+            setIsFetching(false);
+        }, 2000);
+    }
     return (
         <>
             <div className={Style.head}>
@@ -110,6 +123,7 @@ const Cards = () => {
                         placeHolderText="Job type"
                         defaultOptionIndex={0}
                         onOptionChange={handleSortType}
+                        value={arrType}
                     />
                     <div className={`${Style.wrap} `}>
                         $0/yr
@@ -160,6 +174,7 @@ const Cards = () => {
                     ) : (
                         <p className={Style.loading_text}>No results</p>
                     )}
+                {/*{!isFetching && <Button onClick={loadMoreCards} variant="text" scale="md">Load More</Button>}*/}
             </div>
         </>
     );

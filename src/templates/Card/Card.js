@@ -21,7 +21,7 @@ const Card = () => {
 
     useEffect(() => {
         dispatch(getCard(params.id));
-    }, []);
+    }, [card]);
 
     useEffect(() => {
         dispatch(getCards());

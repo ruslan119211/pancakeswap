@@ -92,7 +92,7 @@ const Select = ({
                     onOptionChange,
                     defaultOptionIndex = 0,
                     placeHolderText,
-                    value,
+                    value = defaultOptionIndex,
                     ...props
                 }) => {
     const dropdownRef = useRef(null)
