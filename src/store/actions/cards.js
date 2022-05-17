@@ -2,7 +2,7 @@ import axios from "axios";
 import {GET_CARDS} from "../constants/constants";
 
 const params = {
-    maxRecords: 4,
+    // maxRecords: 4,
     // pageSize: 1
 };
 export const getCards = () => (dispatch) => {
