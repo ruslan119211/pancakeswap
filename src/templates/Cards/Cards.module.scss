@@ -59,7 +59,6 @@
     }
   }
 }
-
 .wrap_list {
   display: flex;
   flex-direction: column;
@@ -77,5 +76,8 @@
     margin: 20px auto;
 
 
+  }
+  & > button{
+    margin: 8px 0;
   }
 }

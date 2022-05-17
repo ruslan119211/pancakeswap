@@ -19,6 +19,7 @@ const Cards = () => {
     const [isChecked, setIsChecked] = useState(false);
     const [filterToSalary, setFilterToSalary] = useState();
     const [isFetching, setIsFetching] = useState(false);
+    const [keySelect, setKeySelect] = useState(1);
     const dispatch = useDispatch();
     const isCardList = !!cardList?.length;
 
@@ -81,11 +82,13 @@ const Cards = () => {
         setFilterToSalary(value);
     }
 
-    const handleClear = () => {
+
+    const handleClear = (options) => {
         setFilterByName('');
 
-        setFilterToType(null);
+        setFilterToType();
         setFilterToSalary(maxSliderValue);
+        setKeySelect(i => i + 1)
 
     }
 
@@ -96,11 +99,12 @@ const Cards = () => {
         setTimeout(() => {
             setCardList((prevState) => [
                 ...prevState,
-                ...Array.from(Array(20).keys(), (n) => n + prevState.length + 1),
+                // ...Array.from(Array(20).keys(), (n) => n + prevState.length + 1),
             ]);
             setIsFetching(false);
         }, 2000);
     }
+
     return (
         <>
             <div className={Style.head}>
@@ -108,7 +112,8 @@ const Cards = () => {
                     Let’s find a PancakeSwap Job for you
                     <img src={icons.bunnyIcon} alt="ico"/>
                 </h1>
-                <p>Discover 562+ remote PancakeSwap Jobs around the world at companies working on blockchain, smart contract, DeFi, NFT, crypto etc.</p>
+                <p>Discover 562+ remote PancakeSwap Jobs around the world at companies working on blockchain, smart
+                    contract, DeFi, NFT, crypto etc.</p>
             </div>
             <div className={Style.wrap_filter}>
                 <div className={Style.search_wrap}>
@@ -119,11 +124,11 @@ const Cards = () => {
 
                 <CardsLayout>
                     <Select
+                        key={keySelect}
                         options={arrType}
                         placeHolderText="Job type"
-                        defaultOptionIndex={0}
                         onOptionChange={handleSortType}
-                        value={arrType}
+                        value={filterToType}
                     />
                     <div className={`${Style.wrap} `}>
                         $0/yr
@@ -149,31 +154,31 @@ const Cards = () => {
                 </CardsLayout>
             </div>
             <div className={Style.wrap_list}>
-                    {isCardList ? (
-                        cardList.map((card) => {
+                {isCardList ? (
+                    cardList.map((card) => {
 
-                            const date = card.createdTime;
-                            let currentDate = Date.parse(new Date());
-                            let days = (currentDate - Date.parse(date)) / 86400000;
+                        const date = card.createdTime;
+                        let currentDate = Date.parse(new Date());
+                        let days = (currentDate - Date.parse(date)) / 86400000;
 
-                            return (
+                        return (
 
-                                   <BaseCard
-                                        key={card.id}
-                                        image={card.fields['Main Image'][0].url}
-                                        name={card.fields.Name}
-                                        type={card.fields['Job Type']}
-                                        description={card.fields['Short Description']}
-                                        date={Math.round(days)}
-                                        // price={card.fields.Salary}
-                                        id={card.id}
-                                    />
+                            <BaseCard
+                                key={card.id}
+                                image={card.fields['Main Image'][0].url}
+                                name={card.fields.Name}
+                                type={card.fields['Job Type']}
+                                description={card.fields['Short Description']}
+                                date={Math.round(days)}
+                                // price={card.fields.Salary}
+                                id={card.id}
+                            />
 
-                            )
-                        })
-                    ) : (
-                        <p className={Style.loading_text}>No results</p>
-                    )}
+                        )
+                    })
+                ) : (
+                    <p className={Style.loading_text}>No results</p>
+                )}
                 {/*{!isFetching && <Button onClick={loadMoreCards} variant="text" scale="md">Load More</Button>}*/}
             </div>
         </>
