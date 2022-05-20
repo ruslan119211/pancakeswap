@@ -161,7 +161,7 @@ const Cards = () => {
                                 variant="text"
                                 scale="md"
                             >
-                                {tag.value}
+                                {tag.label}
                             </Button>
                         )
                     })

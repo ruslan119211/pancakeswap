@@ -24,14 +24,18 @@ export const arrType = [
 export const arrTags = [
     {
         value: 'Frontend Developer',
+        label: 'Frontend'
     },
     {
         value: 'Project Manager',
+        label: 'Project Manager'
     },
     {
         value: 'Backend Developer ',
+        label: 'Backend'
     },
     {
         value: 'Full stack Developer',
+        label: 'Full stack'
     }
 ]
