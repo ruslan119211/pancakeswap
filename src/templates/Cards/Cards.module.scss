@@ -59,6 +59,18 @@
     }
   }
 }
+.wrap_filter_tag{
+  margin-bottom: 55px;
+  gap:62px;
+  display: flex;
+  align-items: center;
+  button{
+    padding: 0;
+    height: auto;
+    font-weight: 400;
+    color: #fff;
+  }
+}
 .wrap_list {
   display: flex;
   flex-direction: column;

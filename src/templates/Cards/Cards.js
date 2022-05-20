@@ -5,7 +5,7 @@ import {getCards} from "../../store/actions/cards";
 import BaseCard from "../../components/BaseCard";
 import {Input, SearchIcon, CardsLayout, Toggle, Button, CloseIcon, useModal} from "@pancakeswap/uikit";
 import Select from "../../components/Select/Select";
-import {arrType} from "../../constants/filter";
+import {arrTags, arrType} from "../../constants/filter";
 import {withStyles} from "@material-ui/core";
 import Slider from '@material-ui/core/Slider';
 import {PrettoSlider} from "../../components/Slider/Slider";
@@ -16,9 +16,9 @@ const Cards = () => {
     const [cardList, setCardList] = useState(cards);
     const [filterByName, setFilterByName] = useState("");
     const [filterToType, setFilterToType] = useState(null);
-    const [isChecked, setIsChecked] = useState(false);
+    const [filterTag, setFilterTag] = useState(null);
+    // const [isChecked, setIsChecked] = useState(false);
     const [filterToSalary, setFilterToSalary] = useState();
-    const [isFetching, setIsFetching] = useState(false);
     const [keySelect, setKeySelect] = useState(1);
     const dispatch = useDispatch();
     const isCardList = !!cardList?.length;
@@ -30,13 +30,16 @@ const Cards = () => {
 
     useEffect(() => {
         setCardList(cards?.filter(customFilter))
-    }, [cards, filterByName, filterToType, filterToSalary])
+    }, [cards, filterByName, filterToType, filterToSalary, filterTag])
 
-    const toggle = () => setIsChecked(!isChecked);
+    // const toggle = () => setIsChecked(!isChecked);
+
+    /* ------- Filter ------- */
     const customFilter = (item) => {
         let isName = false;
         let isType = false;
         let isSalary = false;
+        let isTag = false;
 
         if (filterByName?.toLowerCase()?.length > 2) {
             isName = item?.fields?.Name?.toLowerCase().includes(filterByName?.toLowerCase())
@@ -48,24 +51,20 @@ const Cards = () => {
             isType = true;
         }
 
+        if(item?.fields?.Name == filterTag || !filterTag){
+            isTag = true;
+        }
+
 
         if (item?.fields?.Salary < filterToSalary) {
             isSalary = true;
         }
 
-        return isName && isType && isSalary;
+        return isName && isType && isSalary && isTag;
 
     }
 
-    const handleSearch = (e) => {
-        setFilterByName(e?.target?.value)
-    };
-
-    const handleSortType = (option) => {
-        setFilterToType(option.value)
-    }
-
-
+    /* ------- Getting the maximum salary ------- */
     const maxSliderValue = useMemo(() => {
         const salaries = cards.map((card) => card?.fields?.Salary || 0)
 
@@ -73,36 +72,34 @@ const Cards = () => {
         return Math.max(...salaries)
     }, [cards]);
 
-
     useEffect(() => {
         setFilterToSalary(maxSliderValue)
     }, [maxSliderValue])
 
+
+    /* ------- Filter sort salary ------- */
     const handleSortSalary = (event, value) => {
         setFilterToSalary(value);
     }
-
-
+    /* ------- Filter sort by name ------- */
+    const handleSearch = (e) => {
+        setFilterByName(e?.target?.value)
+    };
+    /* ------- Filter sort by type ------- */
+    const handleSortType = (option) => {
+        setFilterToType(option.value)
+    }
+    /* ------- Filter clear ------- */
     const handleClear = (options) => {
         setFilterByName('');
-
         setFilterToType();
         setFilterToSalary(maxSliderValue);
         setKeySelect(i => i + 1)
-
+        setFilterTag()
     }
-
-    function loadMoreCards() {
-        setIsFetching(true);
-
-        //mocking an API call
-        setTimeout(() => {
-            setCardList((prevState) => [
-                ...prevState,
-                // ...Array.from(Array(20).keys(), (n) => n + prevState.length + 1),
-            ]);
-            setIsFetching(false);
-        }, 2000);
+    /* ------- Filter tag ------- */
+    const handleFilterTag =(e)=>{
+        setFilterTag(e.target.value)
     }
 
     return (
@@ -153,6 +150,23 @@ const Cards = () => {
                     </div>
                 </CardsLayout>
             </div>
+            <div className={Style.wrap_filter_tag}>
+                {
+                    arrTags.map((tag,index)=>{
+                        return(
+                            <Button
+                                key={index}
+                                onClick={handleFilterTag}
+                                value={tag.value}
+                                variant="text"
+                                scale="md"
+                            >
+                                {tag.value}
+                            </Button>
+                        )
+                    })
+                }
+            </div>
             <div className={Style.wrap_list}>
                 {isCardList ? (
                     cardList.map((card) => {
@@ -179,7 +193,6 @@ const Cards = () => {
                 ) : (
                     <p className={Style.loading_text}>No results</p>
                 )}
-                {/*{!isFetching && <Button onClick={loadMoreCards} variant="text" scale="md">Load More</Button>}*/}
             </div>
         </>
     );

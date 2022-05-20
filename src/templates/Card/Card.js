@@ -13,11 +13,13 @@ const Card = () => {
     const card = useSelector((state) => state?.rootReducer?.card);
     const cards = useSelector((state) => state?.rootReducer?.cards?.records);
     const [cardList, setCardList] = useState(cards);
-
     const params = useParams();
     const dispatch = useDispatch();
-
     const isCardList = !!cardList?.length;
+
+    useEffect(() => {
+        document.title = card?.fields?.Name
+    }, [card]);
 
     useEffect(() => {
         dispatch(getCard(params.id));
@@ -26,11 +28,6 @@ const Card = () => {
     useEffect(() => {
         dispatch(getCards());
     }, []);
-
-
-    useEffect(() => {
-        document.title = card?.fields?.Name
-    }, [card]);
 
     useEffect(() => {
         setCardList(cards?.filter(customFilter))
@@ -41,13 +38,10 @@ const Card = () => {
 
         if (item?.fields['Job Type'] == card?.fields?.['Job Type'] && item?.id !== card.id) {
             isType = true;
-
         }
-
         return isType;
 
     }
-    console.log()
     return (
         <>
             <div className={Style.wrap}>
@@ -64,7 +58,7 @@ const Card = () => {
                         </p>
                     </div>
                     <div className={Style.description}>
-                        <p dangerouslySetInnerHTML={{ __html: card?.fields?.['Long Description'].replace(/\n/g, '<br>') }} />
+                        <p dangerouslySetInnerHTML={{__html: card?.fields?.['Long Description'].replace(/\n/g, '<br>')}}/>
                     </div>
                 </div>
                 <div className={Style.side_bar}>
